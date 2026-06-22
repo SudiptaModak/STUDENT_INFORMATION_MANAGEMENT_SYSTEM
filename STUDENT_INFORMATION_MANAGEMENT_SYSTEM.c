@@ -179,6 +179,16 @@ void displayStudents() {
     }
 
     printf("\n====== STUDENT RECORDS ======\n");
+        fseek(fp, 0, SEEK_END);
+    long totalBytes = ftell(fp);
+    int count = totalBytes / sizeof(struct Student);
+    rewind(fp);
+
+    if (count == 0) {
+        printf("No records found!\n");
+        fclose(fp);
+        return;
+    }
 
     while (fread(&s, sizeof(s), 1, fp) == 1) {
         printf("\nRoll Number : %d\n", s.roll);
