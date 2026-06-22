@@ -95,17 +95,6 @@ int main() {
                 deleteStudent();
                 break;
             case 6: {
-                FILE *fp1;
-                fp1 = fopen("hifhestID.dat", "w+"); 
-                if (fp1 != NULL) {
-                    fprintf(fp1, "%ld", id1);
-                    rewind(fp1);
-                    long id2 = 0;
-                    if (fscanf(fp1, "%ld", &id2) == 1) {
-                        printf("HIGHEST ID: %ld\n", id2);
-                    }
-                    fclose(fp1);
-                }
                 printf("Exiting Program...\n");
                 exit(0);
             }
