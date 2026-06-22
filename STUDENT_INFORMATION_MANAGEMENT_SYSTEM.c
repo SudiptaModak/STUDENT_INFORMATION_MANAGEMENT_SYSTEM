@@ -21,15 +21,6 @@ void searchStudent();
 void updateStudent();
 void deleteStudent();
 
-
-int compareStudentsByID(const void *a, const void *b) {
-    long idA = ((struct Student *)a)->id;
-    long idB = ((struct Student *)b)->id;
-    if (idA < idB) return -1;
-    if (idA > idB) return 1;
-    return 0;
-}
-
 long getLastID() {
     FILE *fp = fopen("students.dat", "rb");
     if (fp == NULL) {
@@ -49,10 +40,6 @@ long getLastID() {
     struct Student *arr = (struct Student *)malloc(count * sizeof(struct Student));
     fread(arr, sizeof(struct Student), count, fp);
     fclose(fp);
-  
-
-    qsort(arr, count, sizeof(struct Student), compareStudentsByID);
-
 
     long maxID;
     int mid = count -1 ;
@@ -264,9 +251,6 @@ void searchStudent() {
     fread(arr, sizeof(struct Student), count, fp);
     fclose(fp);
 
-   
-    qsort(arr, count, sizeof(struct Student), compareStudentsByID);
-
     long searchId;
     printf("Enter Student ID to Search: ");
     scanf("%ld", &searchId);
@@ -318,8 +302,6 @@ void updateStudent() {
         printf("File not found!\n");
         return;
     }
-
-  
     fseek(fp, 0, SEEK_END);
     long totalBytes = ftell(fp);
     int count = totalBytes / sizeof(struct Student);
@@ -334,9 +316,6 @@ void updateStudent() {
     struct Student *arr = (struct Student *)malloc(count * sizeof(struct Student));
     fread(arr, sizeof(struct Student), count, fp);
     fclose(fp);
-
-    qsort(arr, count, sizeof(struct Student), compareStudentsByID);
-
     long searchId;
     printf("Enter Student ID to Update: ");
     scanf("%ld", &searchId);
@@ -399,7 +378,6 @@ void updateStudent() {
             arr[foundIdx].cgpa = -1;
         }
 
-        // Rewrite all records back sorted or modified to save changes
         fp = fopen("students.dat", "wb");
         fwrite(arr, sizeof(struct Student), count, fp);
         fclose(fp);
@@ -434,8 +412,6 @@ void deleteStudent() {
     struct Student *arr = (struct Student *)malloc(count * sizeof(struct Student));
     fread(arr, sizeof(struct Student), count, fp);
     fclose(fp);
-    qsort(arr, count, sizeof(struct Student), compareStudentsByID);
-
     long searchId;
     printf("Enter Student ID to Delete: ");
     scanf("%ld", &searchId);
