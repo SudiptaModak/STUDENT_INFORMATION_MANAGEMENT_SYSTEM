@@ -3,6 +3,7 @@
 #include <string.h>
 
 long id1 = 0;
+
 struct Student {
     int roll;
     char name[50];
@@ -20,7 +21,7 @@ void searchStudent();
 void updateStudent();
 void deleteStudent();
 
-// Helper comparison function to sort students by ID for Binary Search
+
 int compareStudentsByID(const void *a, const void *b) {
     long idA = ((struct Student *)a)->id;
     long idB = ((struct Student *)b)->id;
@@ -29,8 +30,41 @@ int compareStudentsByID(const void *a, const void *b) {
     return 0;
 }
 
+long getLastID() {
+    FILE *fp = fopen("students.dat", "rb");
+    if (fp == NULL) {
+        return 0; 
+    }
+
+    fseek(fp, 0, SEEK_END);
+    long totalBytes = ftell(fp);
+    int count = totalBytes / sizeof(struct Student);
+    rewind(fp);
+
+    if (count == 0) {
+        fclose(fp);
+        return 0; 
+    }
+
+    struct Student *arr = (struct Student *)malloc(count * sizeof(struct Student));
+    fread(arr, sizeof(struct Student), count, fp);
+    fclose(fp);
+  
+
+    qsort(arr, count, sizeof(struct Student), compareStudentsByID);
+
+
+    long maxID;
+    int mid = count -1 ;
+    maxID = arr[mid].id;
+
+    free(arr);
+    return maxID;
+}
+
 int main() {
     int choice;
+     id1=getLastID();
 
     while (1) {
         printf("\n====== STUDENT INFORMATION MANAGEMENT SYSTEM ======\n");
@@ -177,8 +211,9 @@ void displayStudents() {
         printf("No records found!\n");
         return;
     }
-
+     
     printf("\n====== STUDENT RECORDS ======\n");
+
         fseek(fp, 0, SEEK_END);
     long totalBytes = ftell(fp);
     int count = totalBytes / sizeof(struct Student);
@@ -189,7 +224,6 @@ void displayStudents() {
         fclose(fp);
         return;
     }
-
     while (fread(&s, sizeof(s), 1, fp) == 1) {
         printf("\nRoll Number : %d\n", s.roll);
         printf("Name        : %s\n", s.name);
@@ -217,6 +251,8 @@ void displayStudents() {
 }
 
 void searchStudent() {
+
+  
     FILE *fp = fopen("students.dat", "rb");
     if (fp == NULL) {
         printf("File not found!\n");
@@ -272,7 +308,7 @@ void searchStudent() {
         for (int i = 0; i < s.completedSem; i++) {
             printf("Semester %d : %.2f\n", i + 1, s.sgpa[i]);
         }
-
+        
         if (s.cgpa == -1) {
             printf("\nCURRENT CGPA : %.2f\n", s.currentCGPA);
             printf("\nFINAL CGPA cannot be generated.\n");
